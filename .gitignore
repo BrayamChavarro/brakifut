@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build
+.next/
+out/
+dist/
+build/
+.turbo/
+
+# Environment: nunca versionar secretos.
+# Las plantillas env.example y env.production.example NO llevan punto inicial,
+# asi que este patron no las alcanza y si se versionan.
+.env
+.env.*
+
+# Datos locales.
+# SQLite del MVP: es un archivo, y en modo WAL genera ademas -wal y -shm.
+# pgdata/ y *.sqlite eran del plan con PostgreSQL y ya no aplican.
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# Test
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

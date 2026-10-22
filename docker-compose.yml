@@ -1,0 +1,68 @@
+# PitchPulse — stack de produccion.
+#
+# Un solo servicio: la aplicacion Next.js. NO hay contenedor de Nginx ni de base
+# de datos, y es a proposito:
+#
+#   * El servidor ya tiene Nginx nativo corriendo en el puerto 80 (paquete
+#     nginx-1.20.1 de Oracle Linux). Agregar otro Nginx en contenedor chocaria
+#     por el puerto y no aportaria nada. El proxy inverso es el del host, y su
+#     configuracion vive en deploy/nginx-pitchpulse.conf.
+#   * La persistencia es SQLite (node:sqlite), un archivo. No hay motor de base
+#     de datos que levantar; el archivo vive en un volumen.
+#
+# Topologia real:
+#
+#   Internet :80  ->  Nginx del host  ->  127.0.0.1:3000  ->  este contenedor
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pitchpulse:latest
+    container_name: pitchpulse
+    restart: unless-stopped
+
+    env_file:
+      - .env.production
+
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+      DB_FILE: /app/data/pitchpulse.db
+
+    volumes:
+      # La base de datos (y sus archivos -wal y -shm) sobrevive a reinicios y a
+      # reconstrucciones de la imagen. Sin esto, cada `docker compose up --build`
+      # borraria el historial.
+      - pitchpulse-data:/app/data
+
+    ports:
+      # Atado a loopback a proposito. Docker inserta reglas de iptables que NO
+      # pasan por firewalld: si esto fuera "3000:3000", el puerto quedaria
+      # expuesto a Internet aunque firewalld diga que no. Publicando solo en
+      # 127.0.0.1, el unico que puede entrar es el Nginx del host.
+      - "127.0.0.1:3000:3000"
+
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+    logging:
+      # Sin limite de rotacion, los logs llenan el disco en silencio. El server
+      # tiene ~19 GB libres; esto no es teorico.
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  pitchpulse-data:

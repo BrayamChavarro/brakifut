@@ -1,0 +1,34 @@
+# Todo lo que NO debe entrar al contexto de build.
+# Menos contexto = build mas rapido y, sobre todo, menos superficie para filtrar
+# secretos o datos locales dentro de la imagen.
+
+# Dependencias y artefactos locales: se reconstruyen dentro de la imagen.
+node_modules
+.next
+.turbo
+
+# Control de versiones.
+.git
+.gitignore
+
+# La base SQLite local NUNCA debe entrar a la imagen: la de produccion vive en
+# un volumen Docker. Si esto se cuela, la imagen viaja con datos de desarrollo.
+data
+*.db
+*.db-wal
+*.db-shm
+
+# Secretos. Las plantillas (env.example, env.production.example) no llevan punto
+# inicial, asi que no las alcanza este patron y si entran al contexto.
+.env
+.env.*
+
+# Documentacion y diseno: no hacen falta para construir la aplicacion.
+docs
+design
+README.md
+
+# Piezas de despliegue: provision.sh y la config de nginx se ejecutan en el
+# servidor, no dentro de la imagen.
+deploy
+deploy.sh

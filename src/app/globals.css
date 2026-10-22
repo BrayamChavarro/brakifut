@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+/*
+ * Tokens de diseño portados desde el prototipo de Google Stitch
+ * (design/prototype.html, tailwind.config inline).
+ *
+ * En Tailwind v4 el tema se define en CSS con @theme: cada variable del
+ * namespace --color-* genera utilidades (bg-*, text-*, border-*).
+ *
+ * El producto es dark-only: el prototipo original fijaba <html class="dark">
+ * y no existia una paleta clara, asi que no usamos variantes dark:.
+ */
+@theme {
+  /* Superficies */
+  --color-background: #0f131c;
+  --color-surface: #0f131c;
+  --color-surface-dim: #0f131c;
+  --color-surface-bright: #353942;
+  --color-surface-container-lowest: #0a0e16;
+  --color-surface-container-low: #181c24;
+  --color-surface-container: #1c2028;
+  --color-surface-container-high: #262a33;
+  --color-surface-container-highest: #31353e;
+  --color-surface-variant: #31353e;
+
+  /* Texto sobre superficie */
+  --color-on-surface: #dfe2ee;
+  --color-on-surface-variant: #b9cbbd;
+  --color-on-background: #dfe2ee;
+  --color-inverse-surface: #dfe2ee;
+  --color-inverse-on-surface: #2c3039;
+
+  /* Marca: verde de "activo" */
+  --color-primary: #cdffdc;
+  --color-on-primary: #003920;
+  --color-primary-container: #00f59b;
+  --color-on-primary-container: #006b41;
+  --color-primary-fixed: #53ffab;
+  --color-primary-fixed-dim: #00e38f;
+  --color-inverse-primary: #006d42;
+  --color-surface-tint: #00e38f;
+
+  /* Secundario */
+  --color-secondary: #4edea3;
+  --color-on-secondary: #003824;
+  --color-secondary-container: #00a572;
+  --color-on-secondary-container: #00311f;
+  --color-secondary-fixed: #6ffbbe;
+  --color-secondary-fixed-dim: #4edea3;
+  --color-on-secondary-fixed: #002113;
+  --color-on-secondary-fixed-variant: #005236;
+
+  /* Terciario (acento celeste) */
+  --color-tertiary: #e8f5ff;
+  --color-on-tertiary: #00354a;
+  --color-tertiary-container: #a8deff;
+  --color-on-tertiary-container: #006488;
+  --color-tertiary-fixed: #c4e7ff;
+  --color-tertiary-fixed-dim: #7bd0ff;
+  --color-on-tertiary-fixed: #001e2c;
+  --color-on-tertiary-fixed-variant: #004c69;
+
+  /* Bordes */
+  --color-outline: #849588;
+  --color-outline-variant: #3b4a3f;
+
+  /* Error */
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+
+  /* Familias tipograficas: las variables las inyecta next/font en <html>.
+     Se declaran mas abajo en el bloque @theme inline. */
+
+  /* Escala tipografica del prototipo (--text-* + modificadores) */
+  --text-score-display: 36px;
+  --text-score-display--line-height: 40px;
+  --text-score-display--letter-spacing: -0.02em;
+  --text-score-display--font-weight: 800;
+
+  --text-score-display-sm: 22px;
+  --text-score-display-sm--line-height: 26px;
+  --text-score-display-sm--letter-spacing: -0.01em;
+  --text-score-display-sm--font-weight: 700;
+
+  --text-headline-xl: 40px;
+  --text-headline-xl--line-height: 48px;
+  --text-headline-xl--letter-spacing: -0.03em;
+  --text-headline-xl--font-weight: 800;
+
+  --text-headline-lg: 28px;
+  --text-headline-lg--line-height: 34px;
+  --text-headline-lg--letter-spacing: -0.02em;
+  --text-headline-lg--font-weight: 700;
+
+  --text-headline-md: 20px;
+  --text-headline-md--line-height: 26px;
+  --text-headline-md--letter-spacing: -0.01em;
+  --text-headline-md--font-weight: 700;
+
+  --text-headline-sm: 16px;
+  --text-headline-sm--line-height: 22px;
+  --text-headline-sm--font-weight: 600;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 14px;
+  --text-body-md--line-height: 20px;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 12px;
+  --text-body-sm--line-height: 16px;
+  --text-body-sm--font-weight: 400;
+
+  --text-label-md: 13px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--letter-spacing: 0.02em;
+  --text-label-md--font-weight: 600;
+
+  --text-label-sm: 11px;
+  --text-label-sm--line-height: 14px;
+  --text-label-sm--letter-spacing: 0.04em;
+  --text-label-sm--font-weight: 600;
+
+  --text-stat-mono: 13px;
+  --text-stat-mono--line-height: 16px;
+  --text-stat-mono--font-weight: 600;
+}
+
+/*
+ * Bloque separado con @theme inline: cuando un token referencia otra variable
+ * de CSS (next/font inyecta --font-inter / --font-jakarta en <html>), Tailwind
+ * necesita inline para resolver el valor en la utilidad en vez de emitir
+ * var(--font-sans) y anidar variables.
+ */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif,
+    system-ui, sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  overscroll-behavior: none;
+}
+
+/* El prototipo ocultaba la scrollbar; en un producto real es un anti-patron
+   de accesibilidad, asi que no se porta. Solo se estiliza el track. */
+
+/* Respetamos prefers-reduced-motion: el prototipo animaba sin control
+   (animate-pulse / animate-ping) y eso afecta a usuarios sensibles. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  user-select: none;
+}
